@@ -162,6 +162,8 @@ input:focus, select:focus { outline: none; border-color: var(--teal); box-shadow
 .info-line { display: flex; align-items: center; gap: 8px; color: var(--slate); font-size: 14px; margin-top: 4px; }
 .spinner { display: inline-block; width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
+.divider { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 13px; margin: 16px 0; }
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--line); }
 .center { text-align: center; }
 .muted { color: var(--muted); }
 .mt { margin-top: 18px; }

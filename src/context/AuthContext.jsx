@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { firebaseEnabled, auth } from '../lib/firebase.js'
 import {
   onAuthStateChanged, signInWithEmailAndPassword, signOut as fbSignOut,
+  GoogleAuthProvider, signInWithPopup,
 } from 'firebase/auth'
 
 const AuthContext = createContext(null)
@@ -41,6 +42,13 @@ export function AuthProvider({ children }) {
     await signInWithEmailAndPassword(auth, email, password)
   }
 
+  async function signInWithGoogle() {
+    if (!firebaseEnabled) throw new Error('Google sign-in needs Firebase configured.')
+    const provider = new GoogleAuthProvider()
+    provider.setCustomParameters({ prompt: 'select_account' })
+    await signInWithPopup(auth, provider)
+  }
+
   async function signOut() {
     if (!firebaseEnabled) { localStorage.removeItem(LS_ADMIN); setUser(null); return }
     await fbSignOut(auth)
@@ -48,7 +56,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{
-      user, ready, signIn, signOut, firebaseEnabled,
+      user, ready, signIn, signInWithGoogle, signOut, firebaseEnabled,
       isAdmin: user ? (user.local || isAdminEmail(user.email)) : false,
     }}>
       {children}
