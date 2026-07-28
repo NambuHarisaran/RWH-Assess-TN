@@ -2,22 +2,30 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Public can create assessments (anonymous users run the tool).
-    // Reads restricted to authenticated admins.
-    match /assessments/{id} {
-      allow create: if true;
-      allow read: if request.auth != null;
-      allow update, delete: if request.auth != null;
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email in [
+        'nambuharisaran123@gmail.com',
+        'growwithsujith@gmail.com'
+      ];
     }
 
-    // Reference data (districts/rainfall/soil) and settings: public read, admin write.
+    // Public can create assessments (anonymous users run the tool).
+    // Reads/edits restricted to admin accounts.
+    match /assessments/{id} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Settings (rainfall/cost overrides): public read, admin write.
     match /settings/{id} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isAdmin();
     }
+
+    // Reference data: public read, admin write.
     match /reference/{doc=**} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isAdmin();
     }
   }
 }

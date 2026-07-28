@@ -9,6 +9,14 @@ const AuthContext = createContext(null)
 const LOCAL_PASSCODE = 'admin123' // demo passcode for local mode
 const LS_ADMIN = 'rwh_admin'
 
+// Allowlisted admin emails. Only these accounts may access /admin.
+// Any other authenticated Firebase user is signed in but treated as non-admin.
+const ADMIN_EMAILS = [
+  'nambuharisaran123@gmail.com',
+  'growwithsujith@gmail.com',
+]
+const isAdminEmail = (email) => !!email && ADMIN_EMAILS.includes(email.toLowerCase())
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [ready, setReady] = useState(!firebaseEnabled)
@@ -39,7 +47,10 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, ready, signIn, signOut, firebaseEnabled }}>
+    <AuthContext.Provider value={{
+      user, ready, signIn, signOut, firebaseEnabled,
+      isAdmin: user ? (user.local || isAdminEmail(user.email)) : false,
+    }}>
       {children}
     </AuthContext.Provider>
   )

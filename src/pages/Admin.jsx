@@ -6,7 +6,7 @@ import { getSettings, saveSettings, listAssessments } from '../lib/store.js'
 import { WATER_RATE_PER_KL } from '../lib/calc.js'
 
 export default function Admin() {
-  const { user, ready, signOut } = useAuth()
+  const { user, isAdmin, ready, signOut } = useAuth()
   const nav = useNavigate()
   const [settings, setSettings] = useState(null)
   const [rows, setRows] = useState([])
@@ -17,14 +17,25 @@ export default function Admin() {
   }, [ready, user])
 
   useEffect(() => {
-    if (!user) return
+    if (!user || !isAdmin) return
     getSettings().then((s) => setSettings({
       waterRate: s.waterRate ?? WATER_RATE_PER_KL,
       costMultiplier: s.costMultiplier ?? 1,
       rainfallOverrides: s.rainfallOverrides ?? {},
     }))
     listAssessments().then(setRows).catch(() => setRows([]))
-  }, [user])
+  }, [user, isAdmin])
+
+  // Signed in but not an allowlisted admin.
+  if (user && !isAdmin) {
+    return (
+      <div className="card">
+        <h2>Access denied</h2>
+        <p className="sub">{user.email} is not an authorised admin account.</p>
+        <button className="btn ghost" onClick={() => { signOut(); nav('/') }}>Sign out</button>
+      </div>
+    )
+  }
 
   if (!user || !settings) return <div className="card"><div className="info-line">Loading…</div></div>
 
