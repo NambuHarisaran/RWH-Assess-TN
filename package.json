@@ -1,0 +1,25 @@
+{
+  "name": "rwh-assess-tn",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Rainwater Harvesting Potential Assessment for Tamil Nadu",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "seed": "node scripts/seed.mjs"
+  },
+  "dependencies": {
+    "firebase": "^10.12.2",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.24.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.3.1"
+  }
+}
